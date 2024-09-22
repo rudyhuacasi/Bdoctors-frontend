@@ -1,0 +1,34 @@
+/* --------------------------------
+         *   MAIN
+-------------------------------- */
+
+// import:
+@use 'bootstrap/scss/bootstrap';
+@use './partials/reset' as *;
+@use './partials/typography' as *;
+@use './partials/utilities' as *;
+@use './partials/variables' as *;
+@use './partials/extende' as *;
+@use './partials/mixin' as *;
+@use './partials/common' as *;
+
+
+.messageSuccess {
+    padding: 10px 15px;
+        background: rgba(155,225,93,1);
+        border-radius: 10px;
+        border: none;
+        color: #fff;
+        @extend %shadow;
+
+}
+
+.messageError {
+    padding: 10px 15px;
+        background:  red;
+        border-radius: 10px;
+        border: none;
+        color: #fff;
+        @extend %shadow;
+
+}

@@ -1,0 +1,17 @@
+/* --------------------------------
+          *  MIXIN
+-------------------------------- */
+
+//? @mixin ~ @include:
+@mixin checkerboard($size, $color1, $color2) {
+    background:
+        linear-gradient(90deg, $color1 25%, $color2 25%, $color2 50%, $color1 50%, $color1 75%, $color2 75%, $color2 100%),
+        linear-gradient($color1 25%, $color2 25%, $color2 50%, $color1 50%, $color1 75%, $color2 75%, $color2 100%);
+    background-size: #{$size} #{$size};
+    background-blend-mode: multiply;
+}
+
+@mixin col-x($col, $gap) {
+    width: calc(100% / $col - ($gap * ($col - 1) / $col));
+}
+

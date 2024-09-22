@@ -1,0 +1,12 @@
+// custom.scss
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+
+// Sovrascrivi il colore primario
+$primary: #00d9a6;
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+:root {
+  --bs-primary: #00d9a6;
+}

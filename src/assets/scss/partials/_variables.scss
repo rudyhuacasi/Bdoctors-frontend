@@ -1,0 +1,32 @@
+/* --------------------------------
+*             VARIABLES
+-------------------------------- */
+
+//? variables background:
+$primary: #00d9a6;
+$secondary: #fff;
+$tertiary: #000;
+$footer: #00251c;
+
+$gradient: linear-gradient(45deg, rgba(155,225,93,1) 25%, rgba(0,217,166,1) 100%);
+$no-gradient: #9be15d;
+
+//? titoli:
+$hl1: #00d9a6;
+$hl2: #fff;
+$hl3: #000;
+
+
+//? testi:
+$text1: #000;
+$text2: #fff;
+$text3: #00d9a6;
+
+
+//? shadow:
+$shadow: #000;
+$alpha: .3;
+
+//? background color:
+.bg-footer {background-color: $footer;}
+.bg-btn {background: linear-gradient(45deg, rgba(155,225,93,1) 25%, rgba(0,217,166,1) 100%);}
