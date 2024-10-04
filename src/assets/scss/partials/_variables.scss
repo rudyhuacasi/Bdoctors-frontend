@@ -3,10 +3,12 @@
 -------------------------------- */
 
 //? variables background:
-$primary: #00d9a6;
-$secondary: #fff;
-$tertiary: #000;
-$footer: #00251c;
+$primary: #18a99c;
+$secondary: #A9D18E;
+$fondo: #FFFFFF;
+$accento: #FFA07A;
+$testo: #4A4A4A;
+$dettagli:  #003366;
 
 $gradient: linear-gradient(45deg, rgba(155,225,93,1) 25%, rgba(0,217,166,1) 100%);
 $no-gradient: #9be15d;
@@ -28,5 +30,5 @@ $shadow: #000;
 $alpha: .3;
 
 //? background color:
-.bg-footer {background-color: $footer;}
+// .bg-footer {background-color: $footer;}
 .bg-btn {background: linear-gradient(45deg, rgba(155,225,93,1) 25%, rgba(0,217,166,1) 100%);}

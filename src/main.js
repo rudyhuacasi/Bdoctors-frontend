@@ -11,7 +11,8 @@ import App from './App.vue';
 import './assets/scss/main.scss';
 
 //? import bootstrap:
-import * as bootstrap from 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 //? import font-awesome tutte le icone:
 import '@fortawesome/fontawesome-free/css/all.css';
