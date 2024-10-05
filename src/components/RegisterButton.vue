@@ -1,4 +1,6 @@
 <script>
+import Registerloginform from './Registerloginform.vue';
+
 // import:
 export default {
     nome: "RegisterButton",
@@ -7,6 +9,9 @@ export default {
             isModalOpen: false,
             isVisible: false
         };
+    },
+    components: {
+      Registerloginform,
     },
     methods: {
         toggleVisibility() {
@@ -32,35 +37,23 @@ export default {
       </button>
       <div class="visible border border-secondary-subtle bg-light rounded" v-show="isVisible" @mouseleave="isVisible = false">
         <div>
-          <a target="_blank" @click="openModal">
-            <p class="accedi m-0">registrati</p>
-          </a>
-        </div>
-        <div>
-          <a target="_blank" @click="openModal">
-            <p class="accedi m-0">Accedi</p>
+          <a target="_blank" @click="openModal" >
+            <p class="accedi m-0">Accedere</p>
           </a>
         </div>
     </div>
     <!-- Modal -->
-<div v-if="isModalOpen" class="modale" @click.self="closeModal">
-  <div class="modal-content">
-    <div class="riga">
-      <h2>Título del Modal</h2>
-      <button class="close-btn" @click="closeModal">&times;</button>
-    </div>
-    <div class="modal-body">
-      <p>Este es el contenido del modal. Aquí puedes añadir más información.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.</p>
-      <p>Más contenido para demostrar el scroll interno del modal.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.</p>
-      <p>Más contenido para demostrar el scroll interno del modal.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.</p>
-      <p>Más contenido para demostrar el scroll interno del modal.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.</p>
+  <div v-if="isModalOpen" class="modale" @click.self="closeModal">
+    <div class="modal-content">
+      <div class="riga">
+        <h2>Título del Modal</h2>
+        <button class="close-btn" @click="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <Registerloginform/>
+      </div>
     </div>
   </div>
-</div>
       
     </div>
   </template>
