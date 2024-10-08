@@ -3,7 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 
 //? importiamo le pagine del progetto:
 import HomePage from './pages/HomePage.vue';
-import DetailPage from './pages/DetailPage.vue';
+import Servizi from "./pages/Servizi.vue";
+import CreatePage from "./pages/CreatePage.vue";
+import CreateForm from "./pages/CreateForm.vue";
 // import ResultsPage from './pages/ResultsPage.vue';
 // import DetailPage from "./pages/DetailPage.vue";
 // import NotFoundPage from "./pages/NotFoundPage.vue";
@@ -18,15 +20,20 @@ const router = createRouter({
       component: HomePage,
     },
     {
-      path: "/detail",
-      name: "detail",
-      component: DetailPage,
-    }
-    // {
-    //   path: "/results",
-    //   name: "results",
-    //   component: ResultsPage,
-    // },
+      path: "/servizi",
+      name: "servizi",
+      component: Servizi,
+    },
+    {
+      path: "/create",
+      name: "create",
+      component: CreatePage,
+    },
+    {
+      path: "/create/form",
+      name: "createform",
+      component: CreateForm,
+    },
     // {
     //   path: "/details/:slug", per usare il slug di backend
     //   name: "details",

@@ -35,15 +35,15 @@ export default {
         <ul class="nav justify-content-center">
             <li class="nav-item d-flex flex-column mt-3">
                 <i class="fa-solid fa-house-chimney font-s-25"></i>
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <router-link :to="{name:`home`}" class="nav-link active" aria-current="page">Home</router-link>
             </li>
             <li class="nav-item d-flex flex-column mt-3">
                 <i class="fa-solid fa-stethoscope font-s-25"></i>
-                <a class="nav-link" href="#">Attività e servizi</a>
+                <router-link :to="{name:`servizi`}" class="nav-link" href="#">Attività e servizi</router-link>
             </li>
             <li class="nav-item d-flex flex-column mt-3">
                 <i class="fas fa-plus font-s-25"></i>
-                <a class="nav-link" href="#">Aggiungere medico</a>
+                <router-link :to="{name:`create`}" class="nav-link" href="#">Aggiungere medico</router-link>
             </li>
             
             </ul>
