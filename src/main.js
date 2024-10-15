@@ -10,6 +10,12 @@ import App from './App.vue';
 //? import style scss:
 import './assets/scss/main.scss';
 
+import axios from 'axios';
+
+// Configura la base URL
+axios.defaults.baseURL = 'http://localhost:8000'; // Cambia el puerto si es necesario
+
+
 //? import bootstrap:
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';

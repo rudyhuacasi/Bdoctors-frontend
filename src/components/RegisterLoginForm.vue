@@ -1,22 +1,21 @@
 <template>
-    <div id="app">
-        <div class="container wrapper" :class="{ 'active': isActive }">
+    <div class="container wrapper" :class="{ 'active': isActive }">
             <span class="rotate-bg"></span>
             <span class="rotate-bg2"></span>
 
-            <!-- Formulario de Login -->
-            <div class="form-box login" :class="{ 'mani': isLoginActive }">
+            <!--  Login -->
+            <div class="form-box login" :class="{ 'mani': isLoginActive }" v-if="isLoginActive">
                 <h2 class="title animation" style="--i:0; --j:21">Login</h2>
-                <form action="#">
+                <form @submit.prevent="login">
 
                     <div class="input-box animation" style="--i:1; --j:22">
-                        <input type="text" required>
+                        <input type="text" v-model="loginData.email" required>
                         <label for="">Username</label>
                         <i class='bx bxs-user'></i>
                     </div>
 
                     <div class="input-box animation" style="--i:2; --j:23">
-                        <input type="password" required>
+                        <input type="password" v-model="loginData.password" required>
                         <label for="">Password</label>
                         <i class='bx bxs-lock-alt'></i>
                     </div>
@@ -30,51 +29,53 @@
                 </form>
             </div>
 
-            <!-- Texto informativo de Login -->
-            <div class="info-text login d-md-none">
-                <h2 class="animation" style="--i:0; --j:20">Welcome Back!</h2>
-                <p class="animation" style="--i:1; --j:21">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Deleniti,rem?</p>
-            </div>
-
-            <!-- Formulario de Registro -->
-            <div class="form-box register" :class="{ 'd-none': isLoginActive, 'mani': !isLoginActive }">
+            
+            <!-- Registro -->
+            <div class="form-box register" :class="{ 'd-none': isLoginActive, 'mani': !isLoginActive }" v-else>
                 <h2 class="title animation" style="--i:17; --j:0">Sign Up</h2>
 
-                <form action="#">
+                <form @submit.prevent="register">
                     <div class="input-box animation" style="--i:15; --j:1">
-                        <input type="text" required>
+                        <input type="text" v-model="registerData.name" required>
                         <label for="">Nome</label>
                         <i class='bx bxs-user'></i>
                     </div>
 
                     <div class="input-box animation" style="--i:16; --j:2">
-                        <input type="text" required>
+                        <input type="text" v-model="registerData.last_name" required>
                         <label for="">Cognome</label>
                         <i class='bx bxs-user'></i>
                     </div>
 
                     <div class="input-box animation" style="--i:17; --j:3">
-                        <input type="text" required>
+                        <input type="text" v-model="registerData.address" required>
                         <label for="">Indirizzo</label>
                         <i class='bx bxs-user'></i>
                     </div>
 
                     <div class="input-box animation" style="--i:18; --j:4">
-                        <input type="text" required>
+                        <input type="text" v-model="registerData.specialization" required>
                         <label for="">Specializzazione</label>
                         <i class='bx bxs-user'></i>
                     </div>
 
                     <div class="input-box animation" style="--i:19; --j:5">
-                        <input type="email" required>
+                        <input type="email" v-model="registerData.email" required>
                         <label for="">Email</label>
                         <i class='bx bxs-envelope'></i>
                     </div>
 
+                    <!-- password -->
                     <div class="input-box animation" style="--i:20; --j:6">
-                        <input type="password" required>
+                        <input type="password" v-model="registerData.password" required>
                         <label for="">Password</label>
+                        <i class='bx bxs-lock-alt'></i>
+                    </div>
+
+                     <!-- Confirm password -->
+                    <div class="input-box animation" style="--i:21; --j:7">
+                        <input type="password" v-model="registerData.password_confirmation" required>
+                        <label for="">Confirm Password</label>
                         <i class='bx bxs-lock-alt'></i>
                     </div>
 
@@ -88,35 +89,73 @@
                 </form>
             </div>
 
-            <!-- Texto informativo de Registro -->
-            <div class="info-text register d-md-none">
-                <h2 class="animation" style="--i:17; --j:0;">Welcome Back!</h2>
-                <p class="animation" style="--i:18; --j:1;">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Deleniti,rem?</p>
-            </div>
+
         </div>
-    </div>
+    
+    
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
             isActive: false,      
-            isLoginActive: true   
+            isLoginActive: true,
+            loginData: {
+                username: '',
+                password: ''
+            },
+            registerData: {
+                nome: '',
+                cognome: '',
+                indirizzo: '',
+                specializzazione: '',
+                email: '',
+                password: '',
+                password_confirmation: ''
+            }
         };
     },
     methods: {
-        // Muestra el formulario de registro
         showRegister() {
-            this.isActive = true;
-            this.isLoginActive = false;
+        this.isActive = true;
+        this.isLoginActive = false;
         },
-        // Muestra el formulario de login
         showLogin() {
-            this.isActive = false;
-            this.isLoginActive = true;
-        }    
+        this.isActive = false;
+        this.isLoginActive = true;
+        },
+        // il registro
+        async register() {
+        try {
+            const response = await axios.post("/api/register", this.registerData);
+            console.log("Registro exitoso:", response.data);
+            // pulire tutti i dati di register
+            this.registerData = {
+                nome: '',
+                cognome: '',
+                indirizzo: '',
+                specializzazione: '',
+                email: '',
+                password: '',
+                password_confirmation: ''
+            };
+            // dopo va login
+            this.showLogin();
+        } catch (error) {
+            console.error("Error en el registro:", error.response.data);
+        }
+        },
+        // il login
+        async login() {
+        try {
+            this.$emit("login", this.loginData);
+        } catch (error) {
+            console.error("Error en el login:", error.response.data);
+        }
+        }
     }
 };
 </script>

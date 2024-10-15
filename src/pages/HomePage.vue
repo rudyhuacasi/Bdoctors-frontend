@@ -32,7 +32,7 @@
         background-position: top;
         background-size: cover;
         width: 100%;
-        height: calc(100vh - 155px);
+        height: 100vh;
     }
     .fondo::before {
         content: "";
@@ -41,8 +41,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: white; /* Color blanco */
-        opacity: 0.5; /* Ajusta la transparencia según lo necesites */
+        background-color: white; 
+        opacity: 0.5; 
         z-index: 1;
     }
     // dancing script debo meterlo google fonts

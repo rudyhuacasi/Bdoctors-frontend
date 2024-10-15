@@ -23,17 +23,11 @@
       <router-view></router-view>
    </main>
 
-   <!-- footer -->
-   <footer>
-      <FooterComponent/>
-   </footer>
+   
    
 </template>
 <style lang="scss">
 body{
    overflow-x: hidden;
-   header{
-      height: 155px;
-   }
 }
 </style>

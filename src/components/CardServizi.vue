@@ -17,7 +17,7 @@ export default {
         <div class="row row-gap-5">
             <div class="col-4">
                 <div class="card c-modifiche">
-                    <img src="https://assets.codepen.io/3685267/timed-cards-1.jpg" class="card-img-top" alt="...">
+                    <img src="https://assets.codepen.io/3685267/timed-cards-1.jpg" class="rounded-3" alt="...">
                     <div class="card-body">
                         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     </div>
