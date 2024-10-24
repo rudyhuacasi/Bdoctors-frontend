@@ -15,6 +15,9 @@ import axios from 'axios';
 // Configura la base URL
 axios.defaults.baseURL = 'http://localhost:8000'; // Cambia el puerto si es necesario
 
+//font satisfy
+import "@fontsource/satisfy"; // Defaults to weight 400
+import "@fontsource/satisfy/400.css"; // Specify weight
 
 //? import bootstrap:
 import 'bootstrap/dist/css/bootstrap.min.css';

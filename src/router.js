@@ -6,9 +6,7 @@ import HomePage from './pages/HomePage.vue';
 import Servizi from "./pages/Servizi.vue";
 import CreatePage from "./pages/CreatePage.vue";
 import CreateForm from "./pages/CreateForm.vue";
-// import ResultsPage from './pages/ResultsPage.vue';
-// import DetailPage from "./pages/DetailPage.vue";
-// import NotFoundPage from "./pages/NotFoundPage.vue";
+import MedicoPage from "./pages/MedicoPage.vue";
 
 //? creiamo rotte:
 const router = createRouter({
@@ -34,11 +32,11 @@ const router = createRouter({
       name: "createform",
       component: CreateForm,
     },
-    // {
-    //   path: "/details/:slug", per usare il slug di backend
-    //   name: "details",
-    //   component: DetailPage,
-    // },
+    {
+      path: "/medico/:slug", // per usare il slug di backend
+      name: "medico",
+      component: MedicoPage,
+    },
     // {
     //   path: "/not-found",
     //   name: "not-found",
