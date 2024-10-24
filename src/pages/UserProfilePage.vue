@@ -2,10 +2,10 @@
 import axios from 'axios';
 
 export default {
-    name: 'MedicoPage',
+    name: 'UserProfilePage',
     data() {
         return {
-            medico: [],  // Aquí se almacenarán los datos del perfil médico
+            medico: null,  // Solo un objeto para almacenar el perfil médico
         };
     },
     created() {
@@ -13,25 +13,42 @@ export default {
     },
     methods: {
         async fetchMedicalProfiles() {
-            try {
-                const slug = "/api/medical/" + this.$route.params.slug;
-                const response = await axios.get(slug);
-                
-                if (response.data.results) {
-                    this.medico = response.data.results;
-                    const baseUrl = "http://localhost:8000/storage/";
-                    
-                        if (this.medico.photograph) {
-                            this.medico.photograph = baseUrl + this.medico.photograph;
-                        }
-                        if (this.medico.cv) {
-                            this.medico.cv = baseUrl + this.medico.cv;
-                        }
-                        return profile;
-                    
-                } else {
-                    console.error('Error al recuperar los perfiles médicos');
+            try { 
+                // Obtenemos el slug y el user_id de los parámetros de la ruta
+                const slug = this.$route.params.slug;
+                const userId = this.$route.params.user_id;
+
+                // Generamos la URL de la solicitud
+                const url = `/api/user-profiles/${slug}/${userId}`;
+
+                // Obtenemos el token desde localStorage (asegúrate de haberlo guardado antes)
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('Token de autenticación no disponible');
+                    return;
                 }
+                console.log(token);
+
+                // Realizamos la solicitud GET a la API usando el token para la autenticación
+                const response = await axios.get(url, {
+                    headers: {
+                        Authorization: `Bearer ${token}`  // Incluye el token en los encabezados
+                    }
+                });
+                // Verificamos la respuesta
+                if (response.data && response.data.status === 'success') {
+                    this.medico = response.data.results;  // Asignamos los datos del médico
+                    const baseUrl = "http://localhost:8000/storage/";
+
+                    // Ajustamos las URLs de las imágenes y archivos si es necesario
+                    if (this.medico.photograph) {
+                        this.medico.photograph = baseUrl + this.medico.photograph;
+                    }
+                    if (this.medico.cv) {
+                        this.medico.cv = baseUrl + this.medico.cv;
+                    }
+                } else {
+console.log('Respuesta de la API:', response.data);                }
             } catch (error) {
                 console.error('Error al hacer la solicitud a la API:', error);
             }

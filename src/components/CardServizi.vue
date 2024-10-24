@@ -45,7 +45,7 @@ export default {
         } catch (error) {
             console.error('Error al hacer la solicitud a la API:', error);
         }
-    },
+        },
 
         observeCards() {
             // Selecciona todas las tarjetas que todavía no tienen la animación
