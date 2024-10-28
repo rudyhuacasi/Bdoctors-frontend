@@ -87,7 +87,7 @@ const token = localStorage.getItem('token'); // o el método que uses para almac
                     <div class="position-relative">
                         <img :src="profile.photograph" class="rounded-3 busta-img" alt="...">
                         <div class="icon">
-                            <router-link :to="{ name: 'UserProfilePage', params: { slug: profile.slug, user_id: profile.user_id } }" class="iconBox">
+                            <router-link :to="{ name: 'UserProfilePage', params: { slug: profile.slug, id: profile.id } }" class="iconBox">
                                 <i class="fas fa-arrow-up-right-from-square fs-4"></i>
                             </router-link>
                         </div>
