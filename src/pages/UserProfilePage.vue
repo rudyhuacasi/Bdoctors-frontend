@@ -16,10 +16,10 @@ export default {
             try { 
                 // Obtenemos el slug y el user_id de los parámetros de la ruta
                 const slug = this.$route.params.slug;
-                const userId = this.$route.params.user_id;
+                const id = this.$route.params.id;
 
                 // Generamos la URL de la solicitud
-                const url = `/api/user-profiles/${slug}/${userId}`;
+                const url = `/api/user-profiles/${slug}/${id}`;
 
                 // Obtenemos el token desde localStorage (asegúrate de haberlo guardado antes)
                 const token = localStorage.getItem('token');
@@ -48,11 +48,36 @@ export default {
                         this.medico.cv = baseUrl + this.medico.cv;
                     }
                 } else {
-console.log('Respuesta de la API:', response.data);                }
+                console.log('Respuesta de la API:', response.data);                }
             } catch (error) {
                 console.error('Error al hacer la solicitud a la API:', error);
             }
         },
+        // delete
+        async deleteMedicalProfile() {
+        try {
+            const url = `/api/medical/${this.medico.id}`;
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('Token de autenticación no disponible');
+                return;
+            }
+            
+            const response = await axios.delete(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (response.data && response.data.status === 'success') {
+                this.$router.push('/create'); // Redirige al usuario a la página principal
+            } else {
+                console.error('Error al eliminar el perfil:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error al hacer la solicitud de eliminación:', error);
+        }
+    }
     }
 };
 </script>
@@ -60,6 +85,12 @@ console.log('Respuesta de la API:', response.data);                }
 <template>
     <div class="container">
         <div v-if="medico">
+            <router-link :to="{ name: `PutchPage`, 
+                params: { slug: medico.slug, user_id: medico.user_id, id: medico.id  }
+            }">
+            Home
+            </router-link>
+                 <button @click="deleteMedicalProfile" class="delete-button">Eliminar Perfil</button>
             <h1>{{ medico.slug}}</h1>
             <img :src="medico.photograph" alt="Foto de perfil de {{ medico.slug }}" />
 
