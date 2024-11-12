@@ -32,7 +32,7 @@ export default{
                 
                 if (response.data.results) {
 
-                    this.medicalProfiles = response.data.results.data;
+                    this.medicalProfiles = response.data.results;
 
                     const baseUrl = "http://localhost:8000/storage/";
                     this.medicalProfiles = this.medicalProfiles.map(profile => {
@@ -73,12 +73,16 @@ const token = localStorage.getItem('token'); // o el método que uses para almac
 </script>
 <template>
     <div class="container">
-        <h1><em>Inserisci il medico</em></h1>
-        <div class="row row-gap-5">
-            <div class="col-4">
+        <div class="banner my-4">
+            <h1 class="my-2 px-5 title">
+                <em>Inserisci il medico</em>
+            </h1>
+        </div>
+        <div class="row row-gap-5 my-5">
+            <div class="col-4 h-601">
                 <router-link :to="{name:`createform`}">
-                    <div class="card p-5 d-flex align-items-center justify-content-center">
-                        +                    
+                    <div class="card p-5 d-flex align-items-center justify-content-center h-100 border-5">
+                        <i class="fa-solid fa-plus font-s-5"></i>                   
                     </div>
                 </router-link>
             </div>
@@ -93,8 +97,7 @@ const token = localStorage.getItem('token'); // o el método que uses para almac
                         </div>
                     </div>
                     <div class="card-body">
-                        <p class="card-text nome fs-1">{{ formatSlug(profile.slug) }}</p>
-                        
+                        <p class="card-text nome fs-1">{{ formatSlug(profile.slug) }}</p>                    
                     </div>
                 </div>
             </div>
@@ -102,6 +105,8 @@ const token = localStorage.getItem('token'); // o el método que uses para almac
     </div>
 </template>
 <style lang="scss" scoped>
+@use "../assets/scss/partials/variables" as *;
+
 .c-modifiche{
     border: 0;
     img{
@@ -135,5 +140,35 @@ const token = localStorage.getItem('token'); // o el método que uses para almac
     width: 100%;
     height: 450px;
     object-fit: cover;
+}
+.h-601{
+    height: 601px;
+}
+.font-s-5{
+    font-size: 5rem;
+    color: #B197FC;
+}
+.h-100:hover{
+    background-color: #00004d;
+    transition: 0.5s ease all;
+}
+
+.banner {
+    background-color: #fff3c2; 
+    width: 40%; 
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+}
+.title{
+    font-size: 3.3rem;
+    font-family: "Playfair Display";
+    font-weight: 700;
+    font-style: normal;
+    background: linear-gradient(90deg, $primary, $testo, $secondary);
+    background-size: 200%;
+    background-clip: text;
+    color: transparent;
 }
 </style>

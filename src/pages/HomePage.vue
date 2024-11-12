@@ -16,15 +16,17 @@
             <br> 
             è un medico
         </h1>
-        <button class="effect mb-3 submit-checkbox" onclick="validateForm()" type="submit">
-            Vieni con noi
-        </button>
+        <router-link :to="{name:`servizi`}">
+            <button class="effect mb-3 submit-checkbox" onclick="validateForm()" type="submit">
+                <strong>Vieni con noi</strong>
+            </button>
+        </router-link>
     </div>
    </div>
 
 </template>
 <style lang="scss" scoped>
-
+@use "../assets/scss/partials/variables" as *;
     .fondo{
         position: relative;
         background-image: url('https://www.unidprofessional.com/wp-content/uploads/2023/04/Sanita-e-boom-di-medici-a-gettone-con-compensi-di-oro-1024x576.jpg');
@@ -32,41 +34,38 @@
         background-position: top;
         background-size: cover;
         width: 100%;
-        height: 100vh;
+        height: calc(100vh - 130px);
     }
-    .fondo::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: white; 
-        opacity: 0.5; 
-        z-index: 1;
-    }
-    // dancing script debo meterlo google fonts
+    
     .dancing-script{
         z-index: 5;
-       
+        font-family: "Caveat Variable";
+        font-optical-sizing: auto;
+        font-weight: 700;
+        color: #005dba;
+        text-shadow: 2px 2px 0px rgba(0, 0, 0, 3.5);
+        font-size: 55px;
+
     }
     .position{
-         position: absolute;
+        position: absolute;
         top: 10%;
         right: 5%;
     }
 
     // button 
 .effect {
-    background-color: transparent;
-    color: red;
+    color: $testo;
     padding: 13px 36px;
-    border: 2px solid red;
+    border: 2px solid $primary;
     border-radius: 8px;
     position: relative;
     z-index: 1;
     overflow: hidden;
     transition: color 0.8s;
+    text-shadow: 2px 2px 9px rgba(20, 0, 0, 8.5);
+    box-shadow: 0px 0px 20px $primary;
+
 }
 
 .effect:hover {
@@ -80,7 +79,7 @@
     left: 100%;
     width: 120%;
     height: 220%;
-    background-color: red;
+    background-color: $primary;
     border-radius: 50%;
     z-index: -1;
     transition: all 0.6s ease;

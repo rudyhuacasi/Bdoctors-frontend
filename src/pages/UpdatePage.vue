@@ -11,40 +11,51 @@
             </div>
         </div>
         
-            <!-- Checkboxes con validación -->
-        <!-- <div class="col-12 mb-3">
-            <label class="form-label">Seleziona almeno un checkbox:</label>
-
-            <div class="form-check">
-            <input 
-                type="checkbox" 
-                class="form-check-input" 
-                id="validationFormCheck1" 
-                value="checkbox1"
-                v-model="medicalProfile.selectedCheckboxes"
-                :class="{ 'is-invalid': !isCheckboxValid }" />
-            <label class="form-check-label" 
-            :class="{ 'text-danger': !isCheckboxValid }" 
-            for="validationFormCheck1">Checkbox 1</label>
+        <div class="col-12">
+                <label for="specialtyInput" class="form-label">Specialità</label>
+                <input
+                    type="text"
+                    id="specialtyInput"
+                    class="form-control"
+                    v-model="medicalProfile.specialty"
+                    @input="fetchSpecializations"
+                    required
+                >
+                <div class="invalid-feedback">
+                    L'specialità è obbligatorio
+                </div>
+                
+                <!-- Lista de sugerencias -->
+                <ul v-if="specialtySuggestions.length" class="suggestions-list">
+                    <li 
+                        v-for="suggestion in specialtySuggestions" 
+                        :key="suggestion.id" 
+                        @click="selectSpecialization(suggestion)"
+                        class="suggestion-item"
+                    >
+                        {{ suggestion.name }}
+                    </li>
+                </ul>
             </div>
-
-            <div class="form-check">
-            <input 
-                type="checkbox" 
-                class="form-check-input" 
-                id="validationFormCheck2" 
-                value="checkbox2"
-                v-model="medicalProfile.selectedCheckboxes"
-                :class="{ 'is-invalid': !isCheckboxValid }" />
-            <label class="form-check-label" 
-            :class="{ 'text-danger': !isCheckboxValid }" 
-            for="validationFormCheck2">Checkbox 2</label>
+            <!-- Checkboxes para Prestaciones -->
+            <div class="col-12">
+                <label class="form-label">Prestazioni Disponibili</label>
+                <div v-for="performance in performances" :key="performance.id" class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        :value="performance.id"
+                        v-model="medicalProfile.selectedCheckboxes"
+                        :class="{'is-invalid': !isCheckboxValid && checkboxTouched}"
+                    >
+                    <label class="form-check-label" 
+                    :class="{'invalid-feedback': !isCheckboxValid && checkboxTouched}"
+                    >{{ performance.name }}</label>
+                </div>
+                <div v-if="!isCheckboxValid && checkboxTouched" class="invalid-feedback d-block">
+                    Por favor seleccione al menos una prestación.
+                </div>
             </div>
-
-            <div v-if="!isCheckboxValid" class="invalid-feedback d-block">
-            Debes seleccionar al menos un checkbox.
-            </div>
-        </div> -->
 
 
         
@@ -105,11 +116,17 @@ export default {
   data() {
     return {
         medicalProfile: {
-                phone: "",
-                address: "",
-                cv: null,
-                photograph: null,
-            },
+            phone: "",
+            address: "",
+            cv: null,
+            photograph: null,
+            specialty: '',
+            specialization_id: '',
+            selectedCheckboxes: []
+        },
+        performances: [], 
+        specialtySuggestions: [],
+        isCheckboxValid: true,
         checkboxTouched: false,
 
         profileId: this.$route.params.id, // Supongamos que tienes el ID en la ruta
@@ -123,13 +140,48 @@ export default {
       if (this.medicalProfile.cv) {
         return this.medicalProfile.cv.split('/').pop(); // Extraer el nombre del archivo desde la URL
       }
-      return '';
     },
+    
+  },
+  mounted(){
+    this.fetchPerformances();
+    this.fetchMedicalProfiles();
   },
   created() {
+    this.fetchPerformances();
     this.fetchMedicalProfiles();
   },
   methods: {
+        async fetchPerformances() {
+            try {
+                const response = await axios.get('/api/medicine-performances'); // Ruta para obtener prestaciones
+                this.performances = response.data;
+            } catch (error) {
+                console.error('Error fetching performances:', error);
+            }
+        },
+            async fetchSpecializations() {
+        try {
+            const term = this.medicalProfile.specialty; // El término ingresado
+            if (term.length > 2) { // Llama al backend solo si hay al menos 3 caracteres
+                const response = await axios.get('/api/specializations/search', {
+                    params: { term } // Pasa el término como parámetro
+                });
+                this.specialtySuggestions = response.data; // Lista de sugerencias
+            } else {
+                // this.medicalProfile.specialty = specialty.name;
+                this.specialtySuggestions = []; // Limpia si el input es menor a 3 caracteres
+            }
+        } catch (error) {
+            console.error('Error al obtener las especializaciones:', error);
+        }
+    },
+    // Selecciona una sugerencia y la asigna al input
+    selectSpecialization(specialty) {
+    this.medicalProfile.specialty = specialty.name; // Muestra el nombre en el input
+    this.medicalProfile.specialization_id = specialty.id; // Almacena el ID para enviarlo al backend
+    this.specialtySuggestions = []; // Limpia las sugerencias
+    },
         async fetchMedicalProfiles() {
             // Obtenemos el slug y el user_id de los parámetros de la ruta
             const slug = this.$route.params.slug;
@@ -153,12 +205,15 @@ export default {
             });
             if (response.data && response.data.results) {
                 this.medicalProfile = {
-                    phone: response.data.results.phone || "", // Asigna un valor vacío si `phone` no está presente
-                    address: response.data.results.address || "",
-                    cv: response.data.results.cv || null,
-                    photograph: response.data.results.photograph || null,
+                    phone: response.data.results.phone, // Asigna un valor vacío si `phone` no está presente
+                    address: response.data.results.address,
+                    cv: response.data.results.cv,
+                    photograph: response.data.results.photograph,
+                    specialty: response.data.results.specializations.name,
+                    specialization_id: response.data.results.specialization_id,
+                    selectedCheckboxes: response.data.results.profile_performances.map(performance => performance.medicine_performance_id),
                 };
-console.log(this.medicalProfile);
+                  console.log( response.data.results);
             } else {
                 console.error("Datos no encontrados en la respuesta de la API");
             }
@@ -166,15 +221,18 @@ console.log(this.medicalProfile);
 
     async handleSubmit(event) {
         const form = event.target;
-            this.checkboxTouched = true;
-                    // validazione di checkboxes
-                    // this.isCheckboxValid = this.medicalProfile.selectedCheckboxes.length > 0;
-                    if (form.checkValidity() === false ) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
+
+    this.checkboxTouched = true;
+    this.isCheckboxValid = this.medicalProfile.selectedCheckboxes.length > 0;
+
+    if (form.checkValidity() === false || !this.isCheckboxValid) {
+        event.preventDefault();
+        event.stopPropagation();
+    } else {
         await this.updateMedicalProfile();
+    }
+
+    form.classList.add('was-validated');
     },
     
     handleFileUpload(event, field) {
@@ -196,6 +254,8 @@ console.log(this.medicalProfile);
     const data = {
         phone: this.medicalProfile.phone,
         address: this.medicalProfile.address,
+        specialization_id: this.medicalProfile.specialization_id,
+        performances: [...this.medicalProfile.selectedCheckboxes],
       };
 
       // Si el usuario seleccionó un nuevo archivo CV, se ha convertido a base64
@@ -215,7 +275,8 @@ console.log(this.medicalProfile);
                 'Content-Type': 'application/json',
             }
         });
-        console.log(response.data);
+        console.log('Datos a enviar:', data);
+        console.log(response.data.results);
         // Verifica qué se está enviando al servidor
       
     } catch (error) {
@@ -224,13 +285,13 @@ console.log(this.medicalProfile);
 },
 
   },
-        // watch: {
-        //     // Monitorizamos los cambios en los checkboxes para actualizar la validación
-        //     'medicalProfile.selectedCheckboxes'(newValue) {
-        //     // Si se selecciona al menos un checkbox, la validación es correcta
-        //     this.isCheckboxValid = newValue.length > 0;
-        //     },
-        // },
+    watch: {
+        // Monitorizamos los cambios en los checkboxes para actualizar la validación
+        'medicalProfile.selectedCheckboxes'(newValue) {
+        // Si se selecciona al menos un checkbox, la validación es correcta
+        this.isCheckboxValid = newValue.length > 0;
+        },
+    },
   
 };
 </script>
