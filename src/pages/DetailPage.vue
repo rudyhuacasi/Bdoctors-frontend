@@ -1,6 +1,23 @@
 <script>
     export default{
-        name: 'DetailPage',
+        name: 'ModalMessagi',
+        props: {
+            medicalProfileId: {
+            },
+        },
+        data() {
+            return{
+            };
+        },
+        created(){
+    
+        },
+        updated(){
+
+        },
+        methods:{
+
+        }
     }
 </script>
 <template>

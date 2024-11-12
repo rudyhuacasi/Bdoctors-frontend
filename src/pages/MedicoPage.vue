@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import ModalMessagi from '../components/ModalMessagi.vue';
 
 export default {
     name: 'MedicoPage',
@@ -7,6 +8,9 @@ export default {
         return {
             medico: [],  // Aquí se almacenarán los datos del perfil médico
         };
+    },
+    components: {
+      ModalMessagi,
     },
     created() {
         this.fetchMedicalProfiles();  // Llamar al método cuando se cree el componente
@@ -27,8 +31,7 @@ export default {
                         if (this.medico.cv) {
                             this.medico.cv = baseUrl + this.medico.cv;
                         }
-                        return profile;
-                    
+                        console.log(response.data);
                 } else {
                     console.error('Error al recuperar los perfiles médicos');
                 }
@@ -44,6 +47,8 @@ export default {
     <div class="container">
         <div v-if="medico">
             <h1>{{ medico.slug}}</h1>
+            <ModalMessagi :medicalProfileId="medico.id"/>
+
             <img :src="medico.photograph" alt="Foto de perfil de {{ medico.slug }}" />
 
             <h2>Detalles del Médico</h2>

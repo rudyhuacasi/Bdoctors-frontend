@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import SponsorshipModal from '../components/SponsorshipModal.vue';
 
 export default {
     name: 'UserProfilePage',
@@ -7,6 +8,9 @@ export default {
         return {
             medico: null,  // Solo un objeto para almacenar el perfil médico
         };
+    },
+    components: {
+		SponsorshipModal,
     },
     created() {
         this.fetchMedicalProfiles();  // Llamar al método cuando se cree el componente
@@ -47,6 +51,7 @@ export default {
                     if (this.medico.cv) {
                         this.medico.cv = baseUrl + this.medico.cv;
                     }
+                    console.log(response.data);
                 } else {
                 console.log('Respuesta de la API:', response.data);                }
             } catch (error) {
@@ -91,6 +96,9 @@ export default {
             Home
             </router-link>
                  <button @click="deleteMedicalProfile" class="delete-button">Eliminar Perfil</button>
+            
+            <SponsorshipModal />
+
             <h1>{{ medico.slug}}</h1>
             <img :src="medico.photograph" alt="Foto de perfil de {{ medico.slug }}" />
 
