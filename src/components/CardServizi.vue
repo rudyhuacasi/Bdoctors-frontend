@@ -5,7 +5,7 @@ export default {
     nome: "CardServizi",
     data() {
         return {
-            medicalProfiles: [], // Aquí se almacenarán los perfiles médicos
+            medicalProfiles: [],
             currentPage: 1,
             response: null
         };
@@ -14,118 +14,122 @@ export default {
         this.fetchMedicalProfiles();
     },
     updated() {
-        // Llama a la función que activa el IntersectionObserver cuando el DOM se actualiza
         this.observeCards();
     },
     methods: {
+        //Converte una stringa "slug" in un formato leggibile, con le iniziali di ogni parola maiuscole.
         formatSlug(slug) {
         return slug
             .split('-')                   
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))  
             .join(' ');                    
         },
-        // Función para obtener los perfiles médicos desde el servidor
+        //  Recupera i profili medici da un'API tramite una richiesta HTTP
         async fetchMedicalProfiles() {
         try {
-            // Pasa los params en el segundo argumento del método axios.get
             const response = await axios.get("/api/medical", {
                 params: {
                     page: this.currentPage,
                 },
             });
             
+            const baseUrl = "http://localhost:8000/storage/";
             if (response.data.results) {
-                // Guarda los datos de los perfiles médicos
-                this.medicalProfiles = response.data.results.data;
-                this.response = response.data.results;
-                console.log('Resultados de la respuesta:', this.response);
+                 this.medicalProfiles = response.data.results.data.map(profile => {
+                profile.photograph = profile.photograph.startsWith('http')
+                    ? profile.photograph
+                    : baseUrl + profile.photograph;
+                return profile;
+            });
+            this.response = response.data.results;
             } else {
-                console.error('Error al recuperar los perfiles médicos');
+                console.error('Errore al recuperare i perfili');
             }
         } catch (error) {
-            console.error('Error al hacer la solicitud a la API:', error);
+            console.error('Errore a fare la chiamata api:', error);
         }
         },
-
+        // Aggiunge un'animazione ai "card" quando diventano visibili nello schermo.
         observeCards() {
-            // Selecciona todas las tarjetas que todavía no tienen la animación
             const cards = this.$el.querySelectorAll('.card:not(.scale-up-left)');
             
-            // Crea un IntersectionObserver para detectar cuando las tarjetas entran en el viewport
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // Añade la clase que activa la animación
                         entry.target.classList.add('scale-up-left');
-                        observer.unobserve(entry.target);  // Deja de observar una vez que la animación se ha aplicado
+                        observer.unobserve(entry.target);
                     }
                 });
             }, { threshold: 0.5 });
-            // Observa cada tarjeta
+
             cards.forEach(card => {
                 observer.observe(card);
             });
         },
+        //Mostra i profili della pagina successiva e scorre verso l'alto.
         showNextCard() {
             if (this.response && this.response.next_page_url) {
                 this.currentPage++;
-                this.fetchMedicalProfiles();  // Solicita la nueva página
+                this.fetchMedicalProfiles();
                 this.scrollToTop();
             }
         },
-        // Muestra la página anterior
+        //   Mostra i profili della pagina precedente e scorre verso l'alto.
         showPreviousCard() {
             if (this.response && this.response.prev_page_url && this.currentPage > 1) {
                 this.currentPage--;
-                this.fetchMedicalProfiles();  // Solicita la nueva página
+                this.fetchMedicalProfiles();
                 this.scrollToTop();
             }
         },
+        // Fa scorrere la finestra verso l'alto, posizionandola in corrispondenza del contenitore
         scrollToTop() {
-            const container = this.$el.querySelector('.row');  // Selecciona el contenedor de las cartas
+            const container = this.$el.querySelector('.row');
             if (container) {
-                const containerPosition = container.offsetTop; // Posición del contenedor
+                const containerPosition = container.offsetTop;
                 window.scrollTo({
-                    top: containerPosition,  // Desplaza hasta el contenedor
-                    behavior: 'smooth'       // Animación suave
+                    top: containerPosition,
+                    behavior: 'smooth'
                 });
             }
         }
-}
+    }
 }
 </script>
 
 <template>
-    <div class="container my-5">
-        <div class="row row-gap-5">
-            <div class="col-4" v-for="profile in medicalProfiles" :key="profile.id">
-                <div class="card c-modifiche">
-                    <div class="position-relative">
-                        <img :src="profile.photograph" class="rounded-3 busta-img" alt="...">
-                        <div class="icon">
-                            <router-link :to="{ name: `medico`, params: {slug: profile.slug} }" class="iconBox">
-                                <i class="fas fa-arrow-up-right-from-square fs-4"></i>
-                            </router-link>
+    <div class="container">
+        <div class="my-5">
+            <div class="row row-gap-5">
+                <div class="col-4" v-for="profile in medicalProfiles" :key="profile.id">
+                    <div class="card c-modifiche">
+                        <div class="position-relative">
+                            <img :src="profile.photograph" class="rounded-3 busta-img" alt="...">
+                            <div class="icon">
+                                <router-link :to="{ name: `medico`, params: {slug: profile.slug, id: profile.id } }" class="iconBox">
+                                    <i class="fas fa-arrow-up-right-from-square fs-4"></i>
+                                </router-link>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text nome fs-1">{{ formatSlug(profile.slug) }}</p>
-                        
+                        <div class="card-body">
+                            <p class="card-text nome fs-1">{{ formatSlug(profile.slug) }}</p>
+                            
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="d-flex justify-content-between py-4">
-          <!-- indietro-->
-          <button  @click="showPreviousCard" v-if="response && response.prev_page_url">
-            <i class="fas fa-arrow-left indietro"></i>
-            <p class="previous">Indietro</p>
-          </button>
-          <!-- avanti -->
-          <button  @click="showNextCard" v-if="response && response.next_page_url">
-              <p>Avanti</p>
-              <i class="fas fa-arrow-right avanti"></i>
-          </button>
+            <div class="d-flex justify-content-between py-4">
+              <!-- indietro-->
+              <button  @click="showPreviousCard" v-if="response && response.prev_page_url">
+                <i class="fas fa-arrow-left indietro"></i>
+                <p class="previous">Indietro</p>
+              </button>
+              <!-- avanti -->
+              <button  @click="showNextCard" v-if="response && response.next_page_url">
+                  <p>Avanti</p>
+                  <i class="fas fa-arrow-right avanti"></i>
+              </button>
+            </div>
         </div>
     </div>
 </template>
@@ -165,14 +169,12 @@ export default {
     height: 450px;
     object-fit: cover;
 }
-/* Estado inicial de las tarjetas */
 .card {
     opacity: 0;
-    transform: scale(0.5); /* Escala inicial pequeña */
+    transform: scale(0.5);
     transition: opacity 0.5s ease-out;
 }
 
-/* Clase para activar la animación cuando la tarjeta es visible */
 .scale-up-left {
     opacity: 1;
     animation: scale-up-left 0.7s cubic-bezier(0.390, 0.575, 0.565, 1.000) forwards;
