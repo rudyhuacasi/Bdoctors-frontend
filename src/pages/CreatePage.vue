@@ -5,28 +5,30 @@ export default{
     name: 'CreatePage',
     data(){
         return{
-            medicalProfiles: [], // Aquí se almacenarán los perfiles médicos
+            medicalProfiles: [],
             currentPage: 1,
         }
     },
     methods:{
+        // volevo usare il nome con slug e cancellare(-)
         formatSlug(slug) {
         return slug
             .split('-')                   
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))  
             .join(' ');                    
         },
+
+        // funzione di paginazione di tutti i profili medici
         async fetchMedicalProfiles() {
             try {
                 const token = localStorage.getItem('token');
                 console.log(token);
-                // Pasa los params en el segundo argumento del método axios.get
                 const response = await axios.get("/api/user-profiles", {
                     params: {
                         page: this.currentPage,
                     },
                     headers: {
-                        Authorization: `Bearer ${token}` // Incluye el token en los encabezados
+                        Authorization: `Bearer ${token}`
                     }
                 });
                 
@@ -42,33 +44,35 @@ export default{
                         return profile;
                     });
                     this.response = response.data.results;
-                    console.log('Resultados de la respuesta:', this.response);
+                    console.log('risposte:', this.response);
                 } else {
-                    console.error('Error al recuperar los perfiles médicos');
+                    console.error('errore al recuperare profili medici');
                 }
             } catch (error) {
-                console.error('Error al hacer la solicitud a la API:', error);
+                console.error('Errore con el API:', error);
             }
         },
-         showNextCard() {
+        // funzione per il next di paginazione
+        showNextCard() {
             if (this.response && this.response.next_page_url) {
                 this.currentPage++;
-                this.fetchMedicalProfiles();  // Solicita la nueva página
+                this.fetchMedicalProfiles();  
             }
         },
-        // Muestra la página anterior
+        // funzione per il previous di paginazione
         showPreviousCard() {
             if (this.response && this.response.prev_page_url && this.currentPage > 1) {
                 this.currentPage--;
-                this.fetchMedicalProfiles();  // Solicita la nueva página
+                this.fetchMedicalProfiles();  
             }
         },
     },
     mounted() {
-const token = localStorage.getItem('token'); // o el método que uses para almacenar el token
+        const token = localStorage.getItem('token'); 
         if (token) {
-            this.fetchMedicalProfiles(); // Solo llama si hay un token
-        }    }
+            this.fetchMedicalProfiles();
+        }    
+    }
 }
 </script>
 <template>
