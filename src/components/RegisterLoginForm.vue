@@ -1,108 +1,19 @@
-<template>
-    <div class="container wrapper" :class="{ 'active': isActive }">
-            <span class="rotate-bg"></span>
-            <span class="rotate-bg2"></span>
-
-            <!--  Login -->
-            <div class="form-box login" :class="{ 'mani': isLoginActive }" v-if="isLoginActive">
-                <h2 class="title animation" style="--i:0; --j:21">Login</h2>
-                <form @submit.prevent="login">
-
-                    <div class="input-box animation" style="--i:1; --j:22">
-                        <input type="text" v-model="loginData.email" required>
-                        <label for="">Username</label>
-                        <i class='bx bxs-user'></i>
-                    </div>
-
-                    <div class="input-box animation" style="--i:2; --j:23">
-                        <input type="password" v-model="loginData.password" required>
-                        <label for="">Password</label>
-                        <i class='bx bxs-lock-alt'></i>
-                    </div>
-                    <button type="submit" class="btn animation" style="--i:3; --j:24">Login</button>
-                    
-                    <div class="linkTxt animation" style="--i:5; --j:25">
-                        <p>Don't have an account? 
-                            <a href="#" @click.prevent="showRegister">Sign Up</a>
-                        </p>
-                    </div>
-                </form>
-            </div>
-
-            
-            <!-- Registro -->
-            <div class="form-box register" :class="{ 'd-none': isLoginActive, 'mani': !isLoginActive }" v-else>
-                <h2 class="title animation" style="--i:17; --j:0">Sign Up</h2>
-
-                <form @submit.prevent="register">
-                    <div class="input-box animation" style="--i:15; --j:1">
-                        <input type="text" v-model="registerData.name" required>
-                        <label for="">Nome</label>
-                        <i class='bx bxs-user'></i>
-                    </div>
-
-                    <div class="input-box animation" style="--i:16; --j:2">
-                        <input type="text" v-model="registerData.last_name" required>
-                        <label for="">Cognome</label>
-                        <i class='bx bxs-user'></i>
-                    </div>
-
-                    <div class="input-box animation" style="--i:17; --j:3">
-                        <input type="text" v-model="registerData.address" required>
-                        <label for="">Indirizzo</label>
-                        <i class='bx bxs-user'></i>
-                    </div>
-
-                    <div class="input-box animation" style="--i:18; --j:4">
-                        <input type="text" v-model="registerData.specialization" required>
-                        <label for="">Specializzazione</label>
-                        <i class='bx bxs-user'></i>
-                    </div>
-
-                    <div class="input-box animation" style="--i:19; --j:5">
-                        <input type="email" v-model="registerData.email" required>
-                        <label for="">Email</label>
-                        <i class='bx bxs-envelope'></i>
-                    </div>
-
-                    <!-- password -->
-                    <div class="input-box animation" style="--i:20; --j:6">
-                        <input type="password" v-model="registerData.password" required>
-                        <label for="">Password</label>
-                        <i class='bx bxs-lock-alt'></i>
-                    </div>
-
-                     <!-- Confirm password -->
-                    <div class="input-box animation" style="--i:21; --j:7">
-                        <input type="password" v-model="registerData.password_confirmation" required>
-                        <label for="">Confirm Password</label>
-                        <i class='bx bxs-lock-alt'></i>
-                    </div>
-
-                    <button type="submit" class="btn animation" style="--i:21;--j:4">Sign Up</button>
-
-                    <div class="linkTxt animation" style="--i:22; --j:5">
-                        <p>Already have an account? 
-                            <a href="#" @click.prevent="showLogin">Login</a>
-                        </p>
-                    </div>
-                </form>
-            </div>
-
-
-        </div>
-    
-    
-</template>
-
 <script>
 import axios from 'axios';
 
 export default {
+    props: {
+        loginError: {
+        type: String,
+        default: ''
+        }
+    },
     data() {
         return {
             isActive: false,      
             isLoginActive: true,
+            submittedLogin: false,
+            submittedRegister: false,
             loginData: {
                 username: '',
                 password: ''
@@ -119,15 +30,66 @@ export default {
         };
     },
     methods: {
+        // Mostra il modulo di registrazione
         showRegister() {
-        this.isActive = true;
-        this.isLoginActive = false;
+            this.isActive = true;
+            this.isLoginActive = false;
         },
+        // Mostra il modulo di login
         showLogin() {
-        this.isActive = false;
-        this.isLoginActive = true;
+            this.isActive = false;
+            this.isLoginActive = true;
         },
-        // il registro
+        // Valida e invia il modulo di login
+        validateAndLogin() {
+            this.submittedLogin = true;
+            const form = document.querySelector('.form-box.login form');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+            this.login();
+        },
+        // Valida e invia il modulo di registrazione
+        validateAndRegister() {
+            this.submittedRegister = true;
+            const errors = [];
+
+            // validazione
+            if (!this.registerData.name.trim()) {
+                errors.push("Il nome è obbligatorio.");
+            }
+            if (!this.registerData.last_name.trim()) {
+                errors.push("Il cognome è obbligatorio.");
+            }
+            if (!this.registerData.address.trim()) {
+                errors.push("L'indirizzo è obbligatorio.");
+            }
+            if (!this.registerData.specialization.trim()) {
+                errors.push("La specializzazione è obbligatoria.");
+            }
+            if (!this.registerData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.registerData.email)) {
+                errors.push("L'indirizzo email non è valido.");
+            }
+            if (!this.registerData.password.trim() || this.registerData.password.length < 8) {
+                errors.push("La password deve contenere almeno 8 caratteri.");
+            }
+            if (this.registerData.password !== this.registerData.password_confirmation) {
+                errors.push("Le password non corrispondono.");
+            }
+
+
+            // Mostrar errores si existen
+            if (errors.length > 0) {
+                console.log(errors.join("\n"));
+                return;
+            }
+
+            // Si pasa la validación, se registra
+            this.register();
+        },
+
+        // Registra un nuovo utente
         async register() {
         try {
             const response = await axios.post("/api/register", this.registerData);
@@ -144,28 +106,130 @@ export default {
             };
             // dopo va login
             this.showLogin();
-        } catch (error) {
-            console.error("Error en el registro:", error.response.data);
-        }
+            } catch (error) {
+                console.error("Errore in registro:", error.response.data);
+            }
         },
-        // il login
+        // Effettua il login dell'utente
         async login() {
-        try {
-            this.$emit("login", this.loginData);
-        } catch (error) {
-            console.error("Error en el login:", error.response.data);
-        }
+            try {
+                this.$emit("login", this.loginData);
+            } catch (error) {
+                console.error("Errore in login:", error.response.data);
+            }
         }
     }
 };
 </script>
 
-<style lang="scss" scoped>
+<template>
+    <div class="container wrapper" :class="{ 'active': isActive }">
+            <span class="rotate-bg"></span>
+            <span class="rotate-bg2"></span>
 
-:root {
-    --white: #fff;
-    --black: #000;
-    --lightBulue: #17a;
+            <!--  Login -->
+            <div class="form-box login" :class="{ 'mani': isLoginActive }" v-if="isLoginActive">
+                <h1 class="title animation merienda">Login</h1>
+                <form class="needs-validation" novalidate @submit.prevent="validateAndLogin">
+
+                    <div class="input-box animation">
+                        <input type="text" v-model="loginData.email" :class="{ 'is-invalid': !loginData.email && submittedLogin }" required>
+                        <label for="" :class="{ 'rosso': !loginData.email && submittedLogin }">Username</label>
+                        <i class="fas fa-user-doctor ps-3 fs-4"></i>
+                    </div>
+
+                    <div class="input-box animation">
+                        <input type="password" v-model="loginData.password" :class="{ 'is-invalid': !loginData.password && submittedLogin }" required>
+                        <label for="" :class="{ 'rosso': !loginData.password && submittedLogin }">Password</label>
+                        <i class="fa-solid fa-lock ps-3 fs-4"></i>
+                    </div>
+                    <div v-if="loginError" class="alert alert-danger d-flex align-items-center" role="alert">
+                        <div>
+                            {{ loginError }}
+                        </div>
+                    </div>
+                    <button type="submit" class="b-lo-register">Login</button>
+                    
+                    <div class="linkTxt animation">
+                        <p>Non hai un account? 
+                            <a href="#" @click.prevent="showRegister">Registrati</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            
+            <!-- Registro -->
+            <div class="form-box register" :class="{ 'd-none': isLoginActive, 'mani': !isLoginActive }" v-else>
+                <h2 class="title animation merienda">Sign Up</h2>
+
+                <form class="needs-validation" novalidate @submit.prevent="validateAndRegister">
+                    <div class="input-box animation" >
+                        <input type="text" v-model="registerData.name" :class="{ 'is-invalid': submittedRegister && !registerData.name }" required>
+                        <label for="" :class="{ 'rosso': submittedRegister && !registerData.name }">Nome</label>
+                        <i class="fa-solid fa-user ps-3 fs-4"></i>
+                    </div>
+
+                    <div class="input-box animation">
+                        <input type="text" v-model="registerData.last_name" :class="{ 'is-invalid': submittedRegister && !registerData.last_name }" required>
+                        <label for="" :class="{ 'rosso': submittedRegister && !registerData.last_name }">Cognome</label>
+                        <i class="fa-solid fa-user ps-3 fs-4"></i>
+                    </div>
+
+                    <div class="input-box animation">
+                        <input type="text" v-model="registerData.address" :class="{ 'is-invalid': submittedRegister && !registerData.address }" required>
+                        <label for="" :class="{ 'rosso': submittedRegister && !registerData.address }">Indirizzo</label>
+                        <i class="fa-solid fa-location-dot ps-3 fs-4"></i>
+                    </div>
+
+                    <div class="input-box animation">
+                        <input type="text" v-model="registerData.specialization" :class="{ 'is-invalid': submittedRegister && !registerData.specialization }"  required>
+                        <label for="" :class="{ 'rosso': submittedRegister && !registerData.specialization }">Specializzazione</label>
+                        <i class="fa-solid fa-stethoscope ps-3 fs-4"></i>
+                    </div>
+
+                    <div class="input-box animation">
+                        <input type="email" v-model="registerData.email" :class="{ 'is-invalid': submittedRegister && !registerData.email }" required>
+                        <label for="" :class="{ 'rosso': submittedRegister && !registerData.email }">Email</label>
+                        <i class="fa-solid fa-envelope ps-3 fs-4"></i>
+                    </div>
+
+                    <!-- password -->
+                    <div class="input-box animation">
+                        <input type="password" v-model="registerData.password" :class="{ 'is-invalid': submittedRegister && !registerData.password }" required>
+                        <label for="" :class="{ 'rosso': submittedRegister && !registerData.password }">Password</label>
+                        <i class="fa-solid fa-lock ps-3 fs-4"></i>
+                    </div>
+
+                     <!-- Confirm password -->
+                    <div class="input-box animation">
+                        <input type="password" v-model="registerData.password_confirmation" :class="{ 'is-invalid': submittedRegister && !registerData.password_confirmation }" required>
+                        <label for="" :class="{ 'rosso': submittedRegister && !registerData.password_confirmation }">Confirm Password</label>
+                        <i class="fa-solid fa-lock ps-3 fs-4"></i>
+                    </div>
+
+                    <button type="submit" class="b-lo-register">Sign Up</button>
+
+                    <div class="linkTxt animation">
+                        <p>Hai già un account? 
+                            <a href="#" @click.prevent="showLogin">Accedi</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+</template>
+
+<style lang="scss" scoped>
+@use "../assets/scss/partials/_variables" as *;
+
+.input-box input.is-invalid {
+    border-bottom: 2px solid #dc3545;
+    box-shadow: none;
+}
+
+.rosso{
+    color: #dc3545;
 }
 
 * {
@@ -184,11 +248,11 @@ body {
 
 .wrapper {
     position: relative;
-    height: 650px;
-    background: var(--white);
-    border: 2px solid var(--black);
+    height: 700px;
+    background: #fff;
+    border: 2px solid #000;
     border-radius: 10px;
-    box-shadow: 0 0 20px var(--black);
+    box-shadow: 0 0 20px #000;
     overflow: hidden;
 }
 
@@ -211,7 +275,7 @@ body {
     margin-bottom: 10px;
     position: relative;
     font-size: 32px;
-    color: var(--black);
+    color: #000;
     text-align: center;
 }
 
@@ -223,7 +287,7 @@ body {
     transform: translateX(-50%);
     width: 40px;
     height: 4px;
-    background: var(--black);
+    background: #000;
 }
 
 .form-box .input-box {
@@ -234,22 +298,22 @@ body {
 }
 
 .input-box input {
-    width: 100%;
+    width: 90%;
     height: 100%;
     background: transparent;
-    color: var(--black);
+    color: #000;
     font-size: 16px;
     font-weight: 500;
     border: none;
     outline: none;
-    border-bottom: 2px solid var(--black);
+    border-bottom: 2px solid #000;
     transition: .5s;
     padding-right: 23px;
 }
 
 .input-box input:focus,
 .input-box input:valid {
-    border-bottom-color: var(--lightBulue);
+    border-bottom-color: #17a;
 }
 
 .input-box label {
@@ -258,7 +322,6 @@ body {
     left: 0;
     transform: translateY(-50%);
     font-size: 16px;
-    color: var(--black);
     pointer-events: none;
     transition: 0.5s;
 }
@@ -266,7 +329,7 @@ body {
 .input-box input:focus~label,
 .input-box input:valid~label {
     top: -5px;
-    color: var(--lightBulue);
+    color: #17a;
 }
 
 .input-box i {
@@ -280,21 +343,13 @@ body {
 
 .input-box input:focus~i,
 .input-box input:valid~i {
-    color: var(--lightBulue);
+    color: #17a;
 }
 
 form button {
     width: 100%;
-    height: 45px;
-    background-color: var(--black);
-    color: var(--white);
-    border: none;
     outline: none;
-    border-radius: 40px;
-    cursor: pointer;
-    font-size: 16px;
     font-weight: 600;
-    transition: .3s;
 }
 
 form button:hover {
@@ -303,7 +358,7 @@ form button:hover {
 
 form .linkTxt {
     font-size: 14px;
-    color: var(--black);
+    color: #000;
     text-align: center;
     margin: 20px 0 10px;
 }
@@ -347,14 +402,14 @@ form .linkTxt {
 
 .wrapper .info-text h2 {
     font-size: 36px;
-    color: var(--white);
+    color: #fff;
     line-height: 1.3;
     text-transform: uppercase;
 }
 
 .wrapper .info-text p {
     font-size: 16px;
-    color: var(--white);
+    color: #fff;
 }
 
 .wrapper .info-text.login .animation {
@@ -378,8 +433,8 @@ form .linkTxt {
     top: -4px;
     right: 0;
     width: 500vw;
-    height: 65vh;
-    background: #000;
+    height: 100%;
+    background: #18a99c;
     transform: rotate(30deg) skewY(1deg);
     transform-origin: bottom right;
     transition: 1.5s ease;
@@ -447,7 +502,7 @@ form .linkTxt {
     top: 100%;
     left: 30%;
     width: 200vw;
-    height: 140vh;
+    height: 220vh;
     background: white;
     transform: rotate(0) skewY(0);
     transform-origin: bottom left;
@@ -463,6 +518,54 @@ form .linkTxt {
 .mani {
     z-index: 1000;
 }
+.merienda {
+  font-family: "Merienda", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  text-align: center;
+}
+
+/* From Uiverse.io by Brian-Pob */ 
+.b-lo-register {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    border: none;
+    border-radius: 5px;
+    padding: .5rem 2rem;
+    font-size: 20px;
+    font-family: sans-serif;
+    background-color: $primary;
+    color: white;
+    transition: all .7s ease-in-out;
+}
+
+.b-lo-register:hover {
+    color: $primary;
+}
+
+.b-lo-register::before {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    border-radius: 5px;
+    width: 0;
+    height: 100%;
+    content: "";
+    background-color: white;
+    transition: all 700ms ease-in-out;
+}
+
+.b-lo-register:hover::before {
+    left: unset;
+    right: 0;
+    width: 100%;
+    transform: rotate(180deg);
+}
+
 @media (max-width: 1000px){
     .wrapper .form-box{
         width: 100%;
@@ -480,7 +583,6 @@ form .linkTxt {
         display: none;
     }
     
-    /* Ajustar animación para pantallas medianas */
     .wrapper .form-box.login .animation {
         transform: translateX(0);
     }
@@ -499,7 +601,6 @@ form .linkTxt {
 }
 
 
-/* Ajustes para pantallas muy pequeñas (móviles) */
 @media (max-width: 480px) {
 
     .wrapper .rotate-bg{
