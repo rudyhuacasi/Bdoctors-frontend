@@ -26,9 +26,30 @@ import  "@fontsource/playfair-display" ;  // Il valore predefinito è peso 400
 import  "@fontsource/playfair-display/400.css" ;  // Specificare peso 
 import  "@fontsource/playfair-display/400-italic.css" ;
 
+import "@fontsource/merienda"; // Defaults to weight 400
+import "@fontsource/merienda/400.css"; // Specify weight
+
+import "@fontsource/charm"; // Defaults to weight 400
+import "@fontsource/charm/400.css"; // Specify weight
+
+import "@fontsource/tinos"; // Defaults to weight 400
+import "@fontsource/tinos/400.css"; // Specify weight
+import "@fontsource/tinos/400-italic.css";
+
+import "@fontsource/delius"; // Defaults to weight 400
+import "@fontsource/delius/400.css"; // Specify weight
+
+import "@fontsource/alex-brush"; // Defaults to weight 400
+import "@fontsource/alex-brush/400.css"; // Specify weight
+
+import dayjs from 'dayjs';
+
 //? import bootstrap:
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+import * as bootstrap from 'bootstrap'; // Importa todo el paquete
+window.bootstrap = bootstrap;
 
 //? import font-awesome tutte le icone:
 import '@fortawesome/fontawesome-free/css/all.css';

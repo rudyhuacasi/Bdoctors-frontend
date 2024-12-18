@@ -35,7 +35,7 @@ const router = createRouter({
       component: CreateForm,
     },
     {
-      path: "/medico/:slug", 
+      path: "/medico/:slug/:id", 
       name: "medico",
       component: MedicoPage,
     },

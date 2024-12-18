@@ -40,6 +40,6 @@ body{
 	background-size: calc(2 * var(--s)) calc(3.46 * var(--s));
 }
 header{
-   height: 130px;
+   height: 30%;
 }
 </style>
