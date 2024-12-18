@@ -4,23 +4,28 @@ export default {
     name: "Header",
     data() {
         return {
-            isAuthenticated: false, // Estado para saber si el usuario está autenticado
+            isAuthenticated: false, 
         };
     },
     components: {
         RegisterButton,
     },
     methods: {
-        // Método para manejar el logout
+        // Gestisce la disconnessione dell'utente
         handleLogout() {
-            localStorage.removeItem("token"); // Borrar el token almacenado
-            this.isAuthenticated = false; // Cambiar el estado de autenticación
+            localStorage.removeItem("token"); 
+            this.isAuthenticated = false; 
+        },
+        // Verifica se la rotta corrente è attiva
+        isActive(routes) {
+            const currentRoute = this.$route.name;
+            return routes.includes(currentRoute) ? 'active-route' : '';
         },
     },
     mounted() {
-        // Verificamos si el usuario está autenticado al montar el componente
+        
         const token = localStorage.getItem("token");
-        this.isAuthenticated = !!token; // Si hay token, el usuario está autenticado
+        this.isAuthenticated = !!token; 
     },
 };
 </script>
@@ -28,42 +33,45 @@ export default {
 <template>
     <nav class="navbar primario-b">
         <div class="container-fluid px-5">
-            <a class="navbar-brand">Navbar</a>
+            <router-link :to="{ name: `home` }" class="navbar-brand">
+                <img class="w-20"  src="/public/img/bnbdoctor.png" alt="logo-bnb-doctor">
+            </router-link>
             <div class="d-flex">
-                <!-- Mostrar el botón de Accedere o Logout según el estado de autenticación -->
+                <!-- button accedere e logout -->
                 <RegisterButton  />
             </div>
         </div>
     </nav>
     <nav class="testo-b">
         <ul class="nav justify-content-center">
-            <li class="nav-item d-flex flex-column mt-3">
-                <i class="fa-solid fa-house-chimney font-s-25"></i>
+            <li class="nav-item" :class="{ activado: isActive('home') }">
                 <router-link
                     :to="{ name: `home` }"
-                    class="nav-link active"
+                    class="nav-link d-flex text-white flex-column pt-3"
                     aria-current="page"
-                    >Home</router-link
                 >
+                <i class="fa-solid fa-house-chimney font-s-25 pb-2"></i>
+                Home
+                </router-link>
             </li>
-            <li class="nav-item d-flex flex-column mt-3">
-                <i class="fa-solid fa-stethoscope font-s-25"></i>
-                <router-link :to="{ name: `servizi` }" class="nav-link" 
-                    >Attività e servizi</router-link
-                >
+            <li class="nav-item mx-4" :class="{ activado: isActive(['servizi', 'medico']) }">
+                <router-link :to="{ name: `servizi` }" class="nav-link d-flex text-white flex-column pt-3" >
+                    <i class="fa-solid fa-stethoscope font-s-25 pb-2"></i>
+                    Attività e servizi
+                </router-link>
             </li>
-            <li class="nav-item d-flex flex-column mt-3" v-if="isAuthenticated">
-                <i class="fas fa-plus font-s-25"></i>
-                <router-link :to="{ name: `create` }" class="nav-link" 
-                    >Aggiungere medico</router-link
-                >
+            <li class="nav-item" :class="{ activado: isActive(['create', 'createform', 'UserProfilePage', 'PutchPage']) }" v-if="isAuthenticated">
+                <router-link :to="{ name: `create` }" class="nav-link d-flex text-white flex-column pt-3" >
+                    <i class="fas fa-plus font-s-25 pb-2"></i>
+                    Aggiungere medico
+                </router-link>
             </li>
         </ul>
     </nav>
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/scss/partials/variables" as *;
+@use "../assets/scss/partials/_variables" as *;
 
 .primario-c {
     color: $primary;
@@ -78,5 +86,16 @@ export default {
 
 .testo-b {
     background-color: $testo;
+}
+.nav-item:hover{
+    background-color: #000039;
+}
+.nav-item{
+    &.activado{
+        background-color: #000039;
+    }
+}
+.w-20{
+    width: 20%;
 }
 </style>
