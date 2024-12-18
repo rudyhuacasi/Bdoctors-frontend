@@ -25,10 +25,10 @@ export default {
                 if (response.data.status === 'success') {
                     this.packages = response.data.results; 
                 } else {
-                    console.error("Error al obtener los datos de patrocinio:", response);
+                    console.error("Errore al vedere sponsorships:", response);
                 }
             } catch (error) {
-                console.error("Error en la solicitud de patrocinio:", error);
+                console.error("Errore in fare la chiamata api:", error);
             }
         },
         // funzione per generare un token di pagamento
