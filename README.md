@@ -1,3 +1,175 @@
+# BoolDoctors
+
+BoolDoctors è una web app che permette di cercare un medico specialista e chiedere un appuntamento.
+
+---
+
+## Descrizione Generale
+BoolDoctors consente agli utenti di cercare un medico specialista nella propria città e di richiedere un appuntamento. Gli utenti possono interagire con la piattaforma come utenti non registrati o registrati.
+
+---
+
+## Tipi di Utenti
+### 1. **Utente Interessato (UI)**:  
+Un utente non registrato che visita il sito.
+
+### 2. **Utente Registrato (UR)**:  
+Un utente che ha effettuato la registrazione come medico.
+
+---
+
+## Lista delle Pagine
+
+### **Homepage**
+- Ricerca di un medico per specializzazione.
+- Accesso veloce ai medici in evidenza.
+
+### **Pagina di Ricerca Avanzata**
+- Visualizzazione dei risultati di ricerca con accesso ai dettagli del medico.
+- Raffinamento della ricerca tramite filtri senza refresh della pagina.
+
+### **Pagina Dottore**
+- Dettagli del medico, inclusi CV, indirizzo e numero di telefono.
+- Invio di messaggi per richiedere disponibilità.
+- Possibilità di scrivere recensioni e assegnare voti.
+- Visualizzazione delle recensioni di altri utenti.
+
+### **Dashboard Utente Registrato**
+- **Pagina Informazioni**: Modifica dei propri dati personali e contatti.
+- **Pagina Lista Messaggi Ricevuti**: Visualizzazione dei messaggi ricevuti dagli utenti.
+- **Pagina Lista Recensioni Ricevute**: Visualizzazione delle recensioni ricevute dagli utenti.
+- **Pagina Sponsorizzazione**: Acquisto di sponsorizzazioni tramite carta di credito.
+- **Pagina Statistiche**: Visualizzazione delle proprie statistiche.
+
+---
+
+## Requisiti Tecnici
+
+1. **Client-side Validation (RT1)**  
+   Tutti i dati inseriti dall'utente sono controllati lato client (oltre che lato server).
+
+2. **Sistema di Pagamento (RT2)**  
+   Utilizzo del sistema di pagamento [Braintree](https://www.braintreepayments.com/) che permette di simulare transazioni.
+
+3. **Responsività (RT3)**  
+   Il sito è completamente responsive, visibile sia da desktop che da smartphone.
+
+4. **Ricerca senza Refresh (RT4)**  
+   La ricerca dei medici avviene senza il refresh della pagina.
+
+---
+
+## Requisiti Funzionali
+
+### (RF1) Permettere ai medici di registrarsi alla piattaforma
+- **Visibilità**: UI
+- **Descrizione**:  
+  I medici possono registrarsi e creare un profilo inserendo:  
+  - Email *(obbligatorio)*  
+  - Password *(obbligatorio)*  
+  - Nome *(obbligatorio)*  
+  - Cognome *(obbligatorio)*  
+  - Indirizzo *(obbligatorio)*  
+  - Specializzazione *(obbligatorio)*  
+
+- **Risultato**: Creazione di un nuovo utente.  
+- **Eccezioni**: L'email è già presente nel sistema.
+
+---
+
+### (RF2) Permettere ai medici di aggiungere il proprio profilo
+- **Visibilità**: UR
+- **Descrizione**:  
+  I medici possono aggiungere al proprio profilo:  
+  - Curriculum Vitae  
+  - Una o più specializzazioni (es. Cardiologia, Dermatologia, etc.)  
+  - Fotografia  
+  - Indirizzo  
+  - Telefono  
+  - Prestazioni  
+
+- **Risultato**: Aggiornamento delle informazioni.  
+- **Eccezioni**: Nessuna.
+
+---
+
+### (RF3) Permettere ai visitatori di ricercare un medico specialista
+- **Visibilità**: UI / UR  
+- **Descrizione**:  
+  Ricerca per specializzazione con possibilità di filtrare per:  
+  - Media voti  
+  - Numero di recensioni  
+
+- **Risultato**: Lista di medici che corrispondono alla ricerca.  
+- **Eccezioni**: Nessuna.
+
+---
+
+### (RF4) Permettere ai visitatori di vedere i dettagli di un medico
+- **Visibilità**: UI  
+- **Descrizione**:  
+  Dettagli del medico, inclusi:  
+  - CV  
+  - Informazioni di contatto  
+  - Recensioni  
+
+- **Risultato**: Visualizzazione della pagina dettagliata.  
+- **Eccezioni**: Nessuna.
+
+---
+
+### (RF5) Permettere ai medici di vedere i messaggi ricevuti
+- **Visibilità**: UR  
+- **Descrizione**:  
+  Visualizzazione dei messaggi ricevuti dagli utenti.  
+  Risposte da gestire via email.  
+
+- **Risultato**: Visualizzazione dei messaggi.  
+- **Eccezioni**: Nessuna.
+
+---
+
+### (RF6) Permettere ai medici di vedere le recensioni ricevute
+- **Visibilità**: UR  
+- **Descrizione**:  
+  I medici possono vedere le recensioni ricevute.  
+
+- **Risultato**: Visualizzazione delle recensioni.  
+- **Eccezioni**: Nessuna.
+
+---
+
+### (RF7) Permettere ai medici di vedere le proprie statistiche
+- **Visibilità**: UR  
+- **Descrizione**:  
+  Visualizzazione delle statistiche:  
+  - Numero di messaggi e recensioni ricevute per mese/anno.  
+  - Grafico a barre dei voti ricevuti per mese/anno.  
+
+- **Risultato**: Visualizzazione delle statistiche.  
+- **Eccezioni**: Nessuna.
+
+---
+
+### (RF8) Permettere ai medici di sponsorizzare il proprio profilo
+- **Visibilità**: UR  
+- **Descrizione**:  
+  Possibilità di acquistare sponsorizzazioni tramite i seguenti pacchetti:  
+  - 2,99 € per 24 ore  
+  - 5,99 € per 72 ore  
+  - 9,99 € per 144 ore  
+
+  **Caratteristiche di un profilo sponsorizzato**:  
+  - Appare nella sezione "Medici in Evidenza" nella homepage.  
+  - Ha priorità nei risultati di ricerca.  
+
+- **Risultato**: Il profilo del medico è sponsorizzato.  
+- **Eccezioni**:  
+  - Pagamento non processato correttamente.  
+  - Dati della carta di credito non validi.
+
+---
+
 # TEMPLATE VUE VITE
 
 > [!NOTE]
@@ -82,7 +254,7 @@ createApp(App)
 ```
 in html devo chiamare `<font-awesome-icon :icon="['fas', 'user-secret']" />`
 
-#### Prima di adoperare:
+#### Prima di vedere:
 
 1. installase le dipendenze:
 ```

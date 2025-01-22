@@ -57,9 +57,27 @@ import '@fortawesome/fontawesome-free/js/all.js';
 
 import dropin from 'braintree-web-drop-in';
 
+import IdleTimeout from './middleware/IdleTimeout';
 
-//? append createApp in #app:
-createApp(App)
-    .use(router)
-    .mount('#app');
-    // .component("font-awesome-icon", FontAwesomeIcon) serve per fare una chiamata per ogni icona
+const app = createApp(App);
+
+const token = localStorage.getItem('token');
+
+    if (token) {
+    app.use(IdleTimeout, {
+        idleTime: 30 * 60 * 1000, 
+        onTimeout: () => {
+        alert('Tu sesión ha expirado por inactividad.');
+        localStorage.removeItem('token');
+        window.location.href = '/not-login';
+        },
+    });
+    }
+
+app.use(router);
+
+app.mount('#app');
+// createApp(App)
+//     .use(router)
+//     .mount('#app');
+//     // .component("font-awesome-icon", FontAwesomeIcon) serve per fare una chiamata per ogni icona

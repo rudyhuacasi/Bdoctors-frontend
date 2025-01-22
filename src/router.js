@@ -9,6 +9,7 @@ import CreateForm from "./pages/CreateForm.vue";
 import MedicoPage from "./pages/MedicoPage.vue";
 import UserProfilePage from "./pages/UserProfilePage.vue";
 import UpdatePage from "./pages/UpdatePage.vue";
+import CloseLoginPage from "./pages/CloseLoginPage.vue";
 
 //? creiamo rotte:
 const router = createRouter({
@@ -49,6 +50,12 @@ const router = createRouter({
       name: 'PutchPage',
       component: UpdatePage
     },
+    {
+      path: "/not-login",
+      name: "NotLogin",
+      component: CloseLoginPage,
+    },
+    
     // {
     //   path: "/not-found",
     //   name: "not-found",
