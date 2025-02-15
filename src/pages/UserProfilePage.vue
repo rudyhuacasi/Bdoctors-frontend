@@ -215,7 +215,7 @@ export default {
                             borderWidth: 1
                         },
                         {
-                            label: 'Valoraciones',
+                            label: 'Valutazione',
                             data: reviewData,
                             backgroundColor: 'rgba(255, 99, 132, 0.5)', 
                             borderColor: 'rgba(255, 99, 132, 1)',
@@ -359,7 +359,6 @@ export default {
                             <i class="fa-solid fa-chart-column"></i> Sponsorizzazioni:
                         </h2>
 
-                        <h4>Tempo rimanente:</h4>
                         <div v-if="timeLeft !== null" class="d-flex align-items-center justify-content-center gap-3">
                             <div class="time-box text-center border rounded-4 px-3 py-2  bg-dark text-white">
                                 <div class="time-value fs-3">{{ formattedTimeLeft.hours }}</div>
@@ -496,7 +495,6 @@ export default {
                             <h3 class="charm pt-5"><i class="fa-solid fa-chart-column"></i> Gráficos:</h3>
 
                             <div>
-                    <h4>Mensajes y Valoraciones</h4>
                     <div class="chart-container my-5">
                         <canvas id="combinedChart"></canvas>
                     </div>

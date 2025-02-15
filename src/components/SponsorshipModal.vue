@@ -146,7 +146,7 @@ export default {
                             </div>
                         </div>
                         <div id="bt-dropin" class="text-start"></div> 
-                        <button type="button" class="btn btn-primary" @click="makePayment">Realizar Pago</button>
+                        <button type="button" class="btn btn-primary" @click="makePayment">Pagamento</button>
                     </div>
                 </div>
             </div>

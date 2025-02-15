@@ -30,6 +30,14 @@ export default {
 			this.fetchMedicalProfiles();
 		}
 	},
+	mounted() {
+		this.autoSlideInterval = setInterval(() => {
+        	this.showNextCard();
+    	}, 10000);
+	},
+	beforeUnmount() {
+		clearInterval(this.autoSlideInterval);
+	},
   	methods: {
 		// Recupera i profili sponsorizzati dagli utenti
 		async fetchSponsorshipProfiles() {
@@ -189,6 +197,34 @@ export default {
 				console.error("Errore a volere vedere i profili:", error);
 			}
         },
+		startAutoSlide() {
+			this.autoSlideInterval = setInterval(() => {
+				this.showNextCard();
+			}, 10000);
+		},
+		resetAutoSlide() {
+			clearInterval(this.autoSlideInterval); 
+			this.startAutoSlide();
+		},
+		setCurrentCard(card) {
+			if (this.animating || this.currentCard === card) return; 
+
+			this.animating = true;
+			this.direction = 'next'; 
+
+			const index = this.red.indexOf(card);
+			if (index === -1) return; 
+
+			const selectedCard = this.red.splice(index, 1)[0];
+			this.red.unshift(selectedCard);
+
+			this.currentCard = this.red[0];
+
+			setTimeout(() => {
+				this.animating = false;
+				this.resetAutoSlide();
+			}, 800);
+		},
 	}
 };
 </script>
@@ -352,12 +388,13 @@ export default {
 				<div class="cards-wrapper position-absolute">
 					<div
 						v-for="(card, index) in red" 
-						:key="card.id"
+						:key="index"
 						class="carte"
 						:class="{
 						'zoom-out': animating && direction === 'next' && index === 0,
 						'zoom-in': animating && direction === 'previous' && index === red.length - 1 || index === 0 && !animating,}"
 						@transitionend="handleTransitionEnd"
+						@click="setCurrentCard(card)"
 					>
 						<img :src="`http://localhost:8000/storage/${card.medical_profile.photograph}`" :alt="card.medical_profile.slug">
 						<div class="card-content p-3">
